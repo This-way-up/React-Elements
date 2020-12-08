@@ -22,7 +22,6 @@ import {
   TextInputProps,
   ImageProps as RNImageProps,
   TouchableHighlightProps,
-  PressableProps,
 } from 'react-native';
 import { RatingProps, AirbnbRatingProps } from 'react-native-ratings';
 import {
@@ -30,9 +29,7 @@ import {
   IconProps as VectorIconProps,
 } from 'react-native-vector-icons/Icon';
 
-export interface TouchableComponent
-  extends TouchableHighlightProps,
-    PressableProps {}
+export interface TouchableComponent extends TouchableHighlightProps {}
 
 /**
  * Supports auto complete for most used types as well as any other string type.
@@ -126,11 +123,6 @@ export interface AvatarProps {
   Component?: React.ComponentClass;
 
   /**
-   * Callback function when pressing Edit button
-   */
-  onAccessoryPress?(): void;
-
-  /**
    * Callback function when pressing component
    */
   onPress?(): void;
@@ -185,20 +177,6 @@ export interface AvatarProps {
   activeOpacity?: number;
 
   /**
-   * If to show the edit button or not
-   *
-   * @default false
-   */
-  showAccessory?: boolean;
-
-  /**
-   * Edit button for the avatar
-   *
-   * @default "{size: null, iconName: 'mode-edit', iconType: 'material', iconColor: '#fff', underlayColor: '#000', style: null}"
-   */
-  accessory?: Partial<IconProps> & Partial<ImageProps>;
-
-  /**
    * Style for the placeholder
    */
   placeholderStyle?: StyleProp<ViewStyle>;
@@ -242,7 +220,11 @@ export interface AvatarProps {
  * Avatar Component
  *
  */
-export class Avatar extends React.Component<AvatarProps> {}
+export class Avatar extends React.Component<AvatarProps> {
+  static Accessory: React.ComponentType<
+    Partial<IconProps> & Partial<ImageProps>
+  >;
+}
 
 export interface ButtonProps
   extends TouchableOpacityProps,
@@ -448,26 +430,18 @@ export function withBadge(
 
 export interface BottomSheetProps {
   /**
-   * List that display the list of Bottomsheet
-   *
-   * @default []
-   */
-  list: ListItemProps[];
-
-  /**
-   * index of the list item which closes Bottom Sheet Component
-   *
-   * @default null
+   * To show or hide the Bottom Sheet Component
+   * @default false
    */
 
-  cancelButtonIndex?: number;
+  isVisible: boolean;
 
   /**
-   * button props
+   * props of react native modal https://reactnative.dev/docs/modal#props
    * @default {}
    */
 
-  buttonProps: ButtonProps;
+  modalProps: ModalProps;
 }
 
 /**
@@ -550,7 +524,13 @@ export interface CardProps {
  * Card component
  *
  */
-export class Card extends React.Component<CardProps> {}
+export class Card extends React.Component<CardProps> {
+  static Divider: React.ComponentType<DividerProps>;
+  static FeaturedSubtitle: React.ComponentType<TextProps>;
+  static FeaturedTitle: React.ComponentType<TextProps>;
+  static Title: React.ComponentType<TextProps>;
+  static Image: React.ComponentType<ImageProps>;
+}
 
 /**
  * Set the buttons within a Group.
@@ -1207,7 +1187,15 @@ export interface ListItemProps extends TouchableComponent {
 /**
  * ListItem component
  */
-export class ListItem extends React.Component<ListItemProps, any> {}
+export class ListItem extends React.Component<ListItemProps, any> {
+  static Content: React.ComponentType<ViewProperties & { right?: boolean }>;
+  static Title: React.ComponentType<TextProps & { right?: boolean }>;
+  static Subtitle: React.ComponentType<TextProps & { right?: boolean }>;
+  static ButtonGroup: React.ComponentType<ButtonGroupProps>;
+  static CheckBox: React.ComponentType<CheckBoxProps>;
+  static Chevron: React.ComponentType<Partial<IconProps>>;
+  static Input: React.ComponentType<InputProps>;
+}
 
 export interface OverlayProps extends ModalProps {
   /**
@@ -1491,6 +1479,11 @@ export interface TooltipProps {
    * Force skip StatusBar height when calculating yOffset of element position (usable inside Modal on Android)
    */
   skipAndroidStatusBar?: boolean;
+
+  /**
+   * Disable auto hiding of tooltip when touching/scrolling anywhere inside the active tooltip popover container. Tooltip closes only when overlay backdrop is pressed (or) highlighted tooltip button is pressed
+   */
+  closeOnlyOnBackdropPress?: boolean;
 }
 
 export class Tooltip extends React.Component<TooltipProps, any> {
@@ -1991,6 +1984,23 @@ export class Tile extends React.Component<TileProps> {}
 
 export interface ImageProps extends RNImageProps {
   /**
+   * Component for enclosing element (eg: TouchableHighlight, View, etc)
+   *
+   * @default View
+   */
+  Component?: React.ComponentClass;
+
+  /**
+   * Callback function when pressing component
+   */
+  onPress?(): void;
+
+  /**
+   * Callback function when long pressing component
+   */
+  onLongPress?(): void;
+
+  /**
    * Specify a different component as the Image component.
    *
    * @default Image
@@ -2018,6 +2028,13 @@ export interface ImageProps extends RNImageProps {
    * @default true
    */
   transition?: boolean;
+
+  /**
+   * Sets transition's duration
+   *
+   * @default 360
+   */
+  transitionDuration?: number;
 }
 
 /**
@@ -2092,6 +2109,11 @@ export interface FullTheme {
   Button: Partial<ButtonProps>;
   ButtonGroup: Partial<ButtonGroupProps>;
   Card: Partial<CardProps>;
+  CardDivider: Partial<DividerProps>;
+  CardFeaturedSubtitle: Partial<TextProps>;
+  CardFeaturedTitle: Partial<TextProps>;
+  CardImage: Partial<ImageProps>;
+  CardTitle: Partial<TextProps>;
   CheckBox: Partial<CheckBoxProps>;
   Divider: Partial<DividerProps>;
   Header: Partial<HeaderProps>;
@@ -2099,6 +2121,13 @@ export interface FullTheme {
   Image: Partial<ImageProps>;
   Input: Partial<InputProps>;
   ListItem: Partial<ListItemProps>;
+  ListItemButtonGroup: Partial<ButtonGroupProps>;
+  ListItemCheckBox: Partial<CheckBoxProps>;
+  ListItemContent: Partial<ViewProperties>;
+  ListItemChevron: Partial<IconProps>;
+  ListItemInput: Partial<InputProps>;
+  ListItemSubtitle: Partial<TextProps>;
+  ListItemTitle: Partial<TextProps>;
   Overlay: Partial<OverlayProps>;
   PricingCard: Partial<PricingCardProps>;
   Rating: Partial<RatingProps>;
@@ -2130,6 +2159,7 @@ export interface ThemeProps<T> {
 export interface ThemeProviderProps<T> {
   theme?: Theme<T>;
   children: React.ReactNode;
+  useDark?: boolean;
 }
 
 export class ThemeProvider<T> extends React.Component<ThemeProviderProps<T>> {

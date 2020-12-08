@@ -1,34 +1,32 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { StyleSheet, View, ActivityIndicator } from 'react-native';
+import { StyleSheet, View, ActivityIndicator, Keyboard } from 'react-native';
 
 import { nodeType, renderNode } from '../helpers';
 
 import Input from '../input/Input';
 import Icon from '../icons/Icon';
 
-const ANDROID_GRAY = 'rgba(0, 0, 0, 0.54)';
-
-const defaultSearchIcon = {
+const defaultSearchIcon = (theme) => ({
   type: 'material',
   size: 25,
-  color: ANDROID_GRAY,
+  color: theme.colors.platform.android.grey,
   name: 'search',
-};
+});
 
-const defaultCancelIcon = {
+const defaultCancelIcon = (theme) => ({
   type: 'material',
   size: 25,
-  color: ANDROID_GRAY,
+  color: theme.colors.platform.android.grey,
   name: 'arrow-back',
-};
+});
 
-const defaultClearIcon = {
+const defaultClearIcon = (theme) => ({
   type: 'material',
   size: 25,
-  color: ANDROID_GRAY,
+  color: theme.colors.platform.android.grey,
   name: 'clear',
-};
+});
 
 class SearchBar extends Component {
   focus = () => {
@@ -75,10 +73,20 @@ class SearchBar extends Component {
       hasFocus: false,
       isEmpty: value ? value === '' : true,
     };
+    Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
+  }
+
+  _keyboardDidHide = () => {
+    this.cancel();
+  };
+
+  componentWillUnmount() {
+    Keyboard.removeListener('keyboardDidHide', this._keyboardDidHide);
   }
 
   render() {
     const {
+      theme,
       clearIcon,
       containerStyle,
       leftIconContainerStyle,
@@ -95,7 +103,9 @@ class SearchBar extends Component {
     const { style: loadingStyle, ...otherLoadingProps } = loadingProps;
 
     return (
-      <View style={StyleSheet.flatten([styles.container, containerStyle])}>
+      <View
+        style={StyleSheet.flatten([styles.container(theme), containerStyle])}
+      >
         <Input
           testID="searchInput"
           renderErrorMessage={false}
@@ -115,10 +125,10 @@ class SearchBar extends Component {
           leftIcon={
             hasFocus
               ? renderNode(Icon, cancelIcon, {
-                  ...defaultCancelIcon,
+                  ...defaultCancelIcon(theme),
                   onPress: this.cancel,
                 })
-              : renderNode(Icon, searchIcon, defaultSearchIcon)
+              : renderNode(Icon, searchIcon, defaultSearchIcon(theme))
           }
           leftIconContainerStyle={StyleSheet.flatten([
             styles.leftIconContainerStyle,
@@ -135,7 +145,7 @@ class SearchBar extends Component {
               )}
               {!isEmpty &&
                 renderNode(Icon, clearIcon, {
-                  ...defaultClearIcon,
+                  ...defaultClearIcon(theme),
                   key: 'cancel',
                   onPress: this.clear,
                 })}
@@ -185,17 +195,17 @@ SearchBar.defaultProps = {
   onFocus: () => null,
   onBlur: () => null,
   onChangeText: () => null,
-  searchIcon: defaultSearchIcon,
-  clearIcon: defaultClearIcon,
-  cancelIcon: defaultCancelIcon,
+  searchIcon: { name: 'search' },
+  clearIcon: { name: 'clear' },
+  cancelIcon: { name: 'arrow-back' },
 };
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: 'white',
+const styles = {
+  container: (theme) => ({
+    backgroundColor: theme.colors.white,
     paddingTop: 8,
     paddingBottom: 8,
-  },
+  }),
   input: {
     marginLeft: 24,
     marginRight: 8,
@@ -210,6 +220,6 @@ const styles = StyleSheet.create({
   leftIconContainerStyle: {
     marginLeft: 8,
   },
-});
+};
 
 export default SearchBar;

@@ -192,6 +192,8 @@ style as well as the red color set in the theme.
 > Remember if you want to override the values set in the theme you can always
 > use component props.
 
+Note: To theme subcomponents such as `ListItem.Title`, in your theme remove the dot and list them as "ListItemTitle"
+
 ---
 
 ### The Theme Object
@@ -206,6 +208,8 @@ interface theme {
   colors: {
     primary;
     secondary;
+    white;
+    black;
     grey0;
     grey1;
     grey2;
@@ -222,11 +226,16 @@ interface theme {
       ios: {
         primary;
         secondary;
+        grey;
+        searchBg;
         success;
         error;
         warning;
       };
       android: {
+        // Same as ios
+      };
+      web: {
         // Same as ios
       };
     };
@@ -252,6 +261,24 @@ const theme = {
 ...
 
 <ThemeProvider theme={theme}>
+```
+
+---
+
+### Dark Mode
+
+React Native Elements also provides a preset dark mode palette to get you started with using dark mode in your app.
+Use the prop `useDark` in `ThemeProvider` to set the default dark theme. You may want to set this by using a button,
+or by using the user's configured settings
+
+```jsx
+import { useColorScheme } from 'react-native-appearance';
+
+...
+  let colorScheme = useColorScheme();
+...
+  <ThemeProvider useDark={colorScheme === 'dark'}>
+...
 ```
 
 ---

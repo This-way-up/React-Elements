@@ -16,7 +16,7 @@ avatars, badges, icons, and more.
 ### Using Map Function - Implemented with avatar
 
 ```js
-import { ListItem } from 'react-native-elements'
+import { ListItem, Avatar } from 'react-native-elements'
 
 const list = [
   {
@@ -35,13 +35,13 @@ const list = [
 <View>
   {
     list.map((l, i) => (
-      <ListItem
-        key={i}
-        leftAvatar={{ source: { uri: l.avatar_url } }}
-        title={l.name}
-        subtitle={l.subtitle}
-        bottomDivider
-      />
+      <ListItem key={i} bottomDivider>
+        <Avatar source={{uri: l.avatar_url}} />
+        <ListItem.Content>
+          <ListItem.Title>{l.name}</ListItem.Title>
+          <ListItem.Subtitle>{l.subtitle}</ListItem.Subtitle>
+        </ListItem.Content>
+      </ListItem>
     ))
   }
 </View>
@@ -50,7 +50,7 @@ const list = [
 ### Using Map Function - Implemented with link and icon
 
 ```js
-import { ListItem } from 'react-native-elements'
+import { ListItem, Icon } from 'react-native-elements'
 
 const list = [
   {
@@ -67,13 +67,13 @@ const list = [
 <View>
   {
     list.map((item, i) => (
-      <ListItem
-        key={i}
-        title={item.title}
-        leftIcon={{ name: item.icon }}
-        bottomDivider
-        chevron
-      />
+      <ListItem key={i} bottomDivider>
+        <Icon name={item.icon} />
+        <ListItem.Content>
+          <ListItem.Title>{item.title}</ListItem.Title>
+        </ListItem.Content>
+        <ListItem.Chevron />
+      </ListItem>
     ))
   }
 </View>
@@ -82,7 +82,7 @@ const list = [
 ### Using RN FlatList - Implemented with link and avatar
 
 ```js
-import { ListItem } from 'react-native-elements'
+import { ListItem, Avatar } from 'react-native-elements'
 
 const list = [
   {
@@ -101,13 +101,14 @@ const list = [
 keyExtractor = (item, index) => index.toString()
 
 renderItem = ({ item }) => (
-  <ListItem
-    title={item.name}
-    subtitle={item.subtitle}
-    leftAvatar={{ source: { uri: item.avatar_url } }}
-    bottomDivider
-    chevron
-  />
+  <ListItem bottomDivider>
+    <Avatar source={{uri: item.avatar_url}} />
+    <ListItem.Content>
+      <ListItem.Title>{item.name}</ListItem.Title>
+      <ListItem.Subtitle>{item.subtitle}</ListItem.Subtitle>
+    </ListItem.Content>
+    <ListItem.Chevron />
+  </ListItem>
 )
 
 render () {
@@ -124,7 +125,7 @@ render () {
 ### Using RN FlatList - Implemented with custom avatar component.
 
 ```js
-import { ListItem } from 'react-native-elements'
+import { ListItem, Avatar } from 'react-native-elements'
 
 const list = [
   {
@@ -142,16 +143,14 @@ const list = [
 keyExtractor = (item, index) => index.toString()
 
 renderItem = ({ item }) => (
-  <ListItem
-    title={item.name}
-    subtitle={item.subtitle}
-    leftAvatar={{
-      source: item.avatar_url && { uri: item.avatar_url },
-      title: item.name[0]
-    }}
-    bottomDivider
-    chevron
-  />
+  <ListItem bottomDivider >
+    <Avatar title={item.name[0]} source={item.avatar_url && { uri: item.avatar_url }}/>
+    <ListItem.Content>
+      <ListItem.Title>{item.name}</ListItem.Title>
+      <ListItem.Subtitle>{item.subtitle}</ListItem.Subtitle>
+    </ListItem.Content>
+    <ListItem.Chevron />
+  </ListItem>
 )
 
 render () {
@@ -168,20 +167,20 @@ render () {
 ### ListItem implemented with custom View for Subtitle
 
 ```js
-import { ListItem } from 'react-native-elements'
+import { ListItem, Avatar } from 'react-native-elements'
 
 render () {
   return (
-    <ListItem
-      title='Limited supply! Its like digital gold!'
-      subtitle={
+    <ListItem>
+      <Avatar source={require('../images/avatar1.jpg')} />
+      <ListItem.Content>
+        <ListItem.Title>Limited supply! Its like digital gold!</ListItem.Title>
         <View style={styles.subtitleView}>
           <Image source={require('../images/rating.png')} style={styles.ratingImage}/>
           <Text style={styles.ratingText}>5 months ago</Text>
         </View>
-      }
-      leftAvatar={{ source: require('../images/avatar1.jpg') }}
-    />
+      </ListItem.Content>
+    </ListItem>
   )
 }
 
@@ -209,17 +208,21 @@ styles = StyleSheet.create({
 Example badge usage
 
 ```js
-<ListItem
-  ...
-  badge={{ value: 3, textStyle: { color: 'orange' }, containerStyle: { marginTop: -20 } }}
-/>
+<ListItem>
+  <Badge
+    value={3}
+    textStyle={{ color: 'orange' }}
+    containerStyle={{ marginTop: -20 }}
+  />
+</ListItem>
 ```
 
 ### Linear gradient + Scale feedback
 
-<img src="/react-native-elements/img/listitem_with_gradient_scale.gif" width="500" />
+<img src="/img/listitem_with_gradient_scale.gif" width="500" />
 
 ```js
+import { ListItem, Avatar } from 'react-native-elements';
 import TouchableScale from 'react-native-touchable-scale'; // https://github.com/kohver/react-native-touchable-scale
 import LinearGradient from 'react-native-linear-gradient'; // Only if no expo
 
@@ -234,13 +237,18 @@ import LinearGradient from 'react-native-linear-gradient'; // Only if no expo
     end: { x: 0.2, y: 0 },
   }}
   ViewComponent={LinearGradient} // Only if no expo
-  leftAvatar={{ rounded: true, source: { uri: avatar_url } }}
-  title="Chris Jackson"
-  titleStyle={{ color: 'white', fontWeight: 'bold' }}
-  subtitleStyle={{ color: 'white' }}
-  subtitle="Vice Chairman"
-  chevron={{ color: 'white' }}
-/>;
+>
+  <Avatar rounded source={{ uri: avatar_url }} />
+  <ListItem.Content>
+    <ListItem.Title style={{ color: 'white', fontWeight: 'bold' }}>
+      Chris Jackson
+    </ListItem.Title>
+    <ListItem.Subtitle style={{ color: 'white' }}>
+      Vice Chairman
+    </ListItem.Subtitle>
+  </ListItem.Content>
+  <ListItem.Chevron color="white" />
+</ListItem>;
 ```
 
 ---
@@ -251,47 +259,62 @@ import LinearGradient from 'react-native-linear-gradient'; // Only if no expo
 > [TouchableHighlight](https://facebook.github.io/react-native/docs/touchablehighlight#props)
 > props
 
+- [`bottomDivider`](#bottomdivider)
 - [`Component`](#Component)
 - [`containerStyle`](#containerstyle)
-- [`contentContainerStyle`](#contentcontainerstyle)
-- [`rightContentContainerStyle`](#rightcontentcontainerstyle)
-- [`chevron`](#chevron)
-- [`checkmark`](#checkmark)
-- [`onPress`](#onpress)
-- [`onLongPress`](#onlongpress)
-- [`title`](#title)
-- [`titleStyle`](#titlestyle)
-- [`titleProps`](#titleprops)
-- [`subtitle`](#subtitle)
-- [`subtitleStyle`](#subtitlestyle)
-- [`subtitleProps`](#subtitleprops)
-- [`rightTitle`](#righttitle)
-- [`rightTitleStyle`](#righttitlestyle)
-- [`rightTitleProps`](#righttitleprops)
-- [`rightSubtitle`](#rightsubtitle)
-- [`rightSubtitleStyle`](#rightsubtitlestyle)
-- [`rightSubtitleProps`](#rightsubtitleprops)
-- [`leftIcon`](#lefticon)
-- [`rightIcon`](#righticon)
-- [`leftAvatar`](#leftavatar)
-- [`rightAvatar`](#rightavatar)
-- [`leftElement`](#leftelement)
-- [`rightElement`](#rightelement)
-- [`switch`](#switch)
-- [`input`](#input)
-- [`buttonGroup`](#buttongroup)
-- [`checkBox`](#checkbox)
-- [`badge`](#badge)
 - [`disabled`](#disabled)
 - [`disabledStyle`](#disabledstyle)
-- [`topDivider`](#topdivider)
-- [`bottomDivider`](#bottomdivider)
-- [`ViewComponent`](#viewcomponent)
+- [`onLongPress`](#onlongpress)
+- [`onPress`](#onpress)
 - [`pad`](#pad)
+- [`topDivider`](#topdivider)
+- [`ViewComponent`](#viewcomponent)
+
+---
+
+## Child Components
+
+### ListItem.ButtonGroup
+
+> Receives all [ButtonGroup](button_group.md#props) props.
+
+### ListItem.CheckBox
+
+> Receives all [CheckBox](checkbox.md#props) props.
+
+### ListItem.Chevron
+
+> Receives all [Icon](icon.md#props) props.
+
+### ListItem.Content
+
+> Receives all [View](https://reactnative.dev/docs/view#props) props.
+
+### ListItem.Input
+
+> Receives all [Input](input.md#props) props.
+
+### ListItem.Subtitle
+
+> Receives all [Text](text.md#props) props.
+
+### ListItem.Title
+
+> Receives all [Text](text.md#props) props.
 
 ---
 
 ## Reference
+
+### `bottomDivider`
+
+Add divider at the bottom of the list item
+
+|  Type   | Default |
+| :-----: | :-----: |
+| boolean |  false  |
+
+---
 
 ### `Component`
 
@@ -310,301 +333,6 @@ additional main container styling (optional)
 |      Type      | Default |
 | :------------: | :-----: |
 | object (style) |  none   |
-
----
-
-### `contentContainerStyle`
-
-additional wrapper styling (title and subtitle container)
-
-|      Type      | Default |
-| :------------: | :-----: |
-| object (style) |  none   |
-
----
-
-### `rightContentContainerStyle`
-
-additional wrapper styling (right title and subtitle container)
-
-|      Type      | Default |
-| :------------: | :-----: |
-| object (style) |  none   |
-
----
-
-### `chevron`
-
-set it to true or custom icon props if you want a chevron (optional)
-
-|                                       Type                                        | Default |
-| :-------------------------------------------------------------------------------: | :-----: |
-| boolean **OR** {[...Icon props](icon.md#props)} **OR** React element or component |  none   |
-
----
-
-### `checkmark`
-
-set it to true or custom icon props if you want a checkmark (optional)
-
-|                                       Type                                        | Default |
-| :-------------------------------------------------------------------------------: | :-----: |
-| boolean **OR** {[...Icon props](icon.md#props)} **OR** React element or component |  none   |
-
----
-
-### `onPress`
-
-onPress method for link (optional)
-
-|   Type   | Default |
-| :------: | :-----: |
-| function |  none   |
-
----
-
-### `onLongPress`
-
-onLongPress method for link (optional)
-
-|   Type   | Default |
-| :------: | :-----: |
-| function |  none   |
-
----
-
-### `title`
-
-Main title of list item
-
-|            Type             | Default |
-| :-------------------------: | :-----: |
-| string **OR** React element |  none   |
-
----
-
-### `titleStyle`
-
-Add additional styling
-
-|    Type    | Default |
-| :--------: | :-----: |
-| Text style |  none   |
-
----
-
-### `titleProps`
-
-provide all props from react-native Text component
-
-|                                      Type                                       | Default |
-| :-----------------------------------------------------------------------------: | :-----: |
-| {[...Text props](https://facebook.github.io/react-native/docs/text.html#props)} |  none   |
-
----
-
-### `subtitle`
-
-subtitle text or custom view (optional)
-
-|            Type             | Default |
-| :-------------------------: | :-----: |
-| string **OR** React element |  none   |
-
----
-
-### `subtitleStyle`
-
-Add additional styling
-
-|    Type    | Default |
-| :--------: | :-----: |
-| Text style |  none   |
-
----
-
-### `subtitleProps`
-
-provide all props from react-native Text component
-
-|                                      Type                                       | Default |
-| :-----------------------------------------------------------------------------: | :-----: |
-| {[...Text props](https://facebook.github.io/react-native/docs/text.html#props)} |  none   |
-
----
-
-### `rightTitle`
-
-Show up a title on the right side of the list item
-
-|            Type             | Default |
-| :-------------------------: | :-----: |
-| string **OR** React element |  none   |
-
----
-
-### `rightTitleStyle`
-
-add additional styling
-
-|    Type    | Default |
-| :--------: | :-----: |
-| Text style |  none   |
-
----
-
-### `rightTitleProps`
-
-provide all props from react-native Text component
-
-|                                      Type                                       | Default |
-| :-----------------------------------------------------------------------------: | :-----: |
-| {[...Text props](https://facebook.github.io/react-native/docs/text.html#props)} |  none   |
-
----
-
-### `rightSubtitle`
-
-Show up a subtitle on the right side of the list item
-
-|            Type             | Default |
-| :-------------------------: | :-----: |
-| string **OR** React element |  none   |
-
----
-
-### `rightSubtitleStyle`
-
-Add additional styling
-
-|    Type    | Default |
-| :--------: | :-----: |
-| Text style |  none   |
-
----
-
-### `rightSubtitleProps`
-
-provide all props from react-native Text component
-
-|                                      Type                                       | Default |
-| :-----------------------------------------------------------------------------: | :-----: |
-| {[...Text props](https://facebook.github.io/react-native/docs/text.html#props)} |  none   |
-
----
-
-### `leftIcon`
-
-displays an icon on the left (optional)
-
-|                            Type                            | Default |
-| :--------------------------------------------------------: | :-----: |
-| {[...Icon props](icon.md#props)}<br/>**OR**<br/> component |  none   |
-
----
-
-### `rightIcon`
-
-displays an icon on the right (optional)
-
-|                            Type                            | Default |
-| :--------------------------------------------------------: | :-----: |
-| {[...Icon props](icon.md#props)}<br/>**OR**<br/> component |  none   |
-
----
-
-### `leftAvatar`
-
-displays an Avatar on the left (optional)
-
-|                              Type                              | Default |
-| :------------------------------------------------------------: | :-----: |
-| {[...Avatar props](avatar.md#props)}<br/>**OR**<br/> component |  none   |
-
----
-
-### `rightAvatar`
-
-displays an Avatar on the right (optional)
-
-|                                       Type                                        | Default |
-| :-------------------------------------------------------------------------------: | :-----: |
-| View style (object){[...Avatar props](avatar.md#props)}<br/>**OR**<br/> component |  none   |
-
----
-
-### `leftElement`
-
-Add any element on the left side of the list item
-
-|     Type      | Default |
-| :-----------: | :-----: |
-| React element |  none   |
-
----
-
-### `rightElement`
-
-Add any element on the right side of the list item
-
-|     Type      | Default |
-| :-----------: | :-----: |
-| React element |  none   |
-
----
-
-### `switch`
-
-add a switch to the right side. (object with the props of the react-native
-`Switch` component)
-
-|                                        Type                                         | Default |
-| :---------------------------------------------------------------------------------: | :-----: |
-| {[...Switch props](https://facebook.github.io/react-native/docs/switch.html#props)} |  none   |
-
----
-
-### `input`
-
-add an Input on the right side (object with the props of the React Native
-Elements `Input` component)
-
-|                Type                | Default |
-| :--------------------------------: | :-----: |
-| {[...Input props](input.md#props)} |  none   |
-
----
-
-### `buttonGroup`
-
-add a button group on the right side (object with the props of the React Native
-Elements `ButtonGroup` component)
-
-|                      Type                       | Default |
-| :---------------------------------------------: | :-----: |
-| {[...ButtonGroup props](button_group.md#props)} |  none   |
-
----
-
-### `checkBox`
-
-add a checkbox on the right side (object with the props of the React Native
-Elements `CheckBox` component)
-
-|                   Type                   | Default |
-| :--------------------------------------: | :-----: |
-| {[...CheckBox props](checkbox.md#props)} |  none   |
-
----
-
-### `badge`
-
-add a badge on the right side (object with the props of the React Native
-Elements `Badge` component)
-
-|                Type                | Default |
-| :--------------------------------: | :-----: |
-| {[...Badge props](badge.md#props)} |  none   |
 
 ---
 
@@ -628,6 +356,37 @@ Specific styling to be used when list item is disabled.
 
 ---
 
+
+### `onLongPress`
+
+onLongPress method for link (optional)
+
+|   Type   | Default |
+| :------: | :-----: |
+| function |  none   |
+
+---
+
+### `onPress`
+
+onPress method for link (optional)
+
+|   Type   | Default |
+| :------: | :-----: |
+| function |  none   |
+
+---
+
+### `pad`
+
+adds spacing between the leftComponent, the title component & right component
+
+|  Type  | Default |
+| :----: | :-----: |
+| number |  `16`   |
+
+---
+
 ### `topDivider`
 
 Add divider at the top of the list item
@@ -638,15 +397,7 @@ Add divider at the top of the list item
 
 ---
 
-### `bottomDivider`
 
-Add divider at the bottom of the list item
-
-|  Type   | Default |
-| :-----: | :-----: |
-| boolean |  false  |
-
----
 
 ### `ViewComponent`
 
@@ -658,10 +409,3 @@ Container for linear gradient (for non-expo user)
 
 ---
 
-### `pad`
-
-adds spacing between the leftComponent, the title component & right component
-
-|  Type  | Default |
-| :----: | :-----: |
-| number |  `16`   |
